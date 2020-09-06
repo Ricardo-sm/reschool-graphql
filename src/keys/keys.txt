@@ -1,0 +1,1 @@
+In this folder sets private and public key files for JWT Authenticaation

@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 
 import { UserModule } from './user/user.module';
 import { join } from 'path';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,9 +22,12 @@ import { join } from 'path';
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
+      context: ({ req }) => ({ req }),
     }),
 
     UserModule,
+
+    AuthModule,
   ],
   providers: [AppService],
 })

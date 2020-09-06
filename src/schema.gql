@@ -8,13 +8,26 @@ input CreateUser {
   username: String!
 }
 
+input DeleteUser {
+  password: String!
+  passwordConfirm: String!
+}
+
+input LogInUser {
+  email: String!
+  password: String!
+}
+
 type Mutation {
   createUser(user: CreateUser!): Boolean!
-  updateUser(id: String!, user: UpdateUser!): Boolean!
+  deleteUser(deleteUser: DeleteUser!): Boolean!
+  updateUser(user: UpdateUser!): Boolean!
 }
 
 type Query {
   getAllUsers: [User!]!
+  getOneUser: User!
+  logIn(user: LogInUser!): String!
 }
 
 input UpdateUser {
