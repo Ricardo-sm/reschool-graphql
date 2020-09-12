@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { environment } from 'src/environment/environment';
+import { environment } from '../environment/environment';
 
 export class UserPayload {
   id: string;

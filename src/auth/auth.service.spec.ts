@@ -1,18 +1,33 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
+import { JwtStrategy } from './jwt.strategy';
+import { JwtModule } from '@nestjs/jwt';
+import { environment } from '../environment/environment';
 
 describe('AuthService', () => {
-  let service: AuthService;
+  let authService: AuthService;
+  let jwtStrategy: JwtStrategy;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService],
+      imports: [
+        JwtModule.register({
+          secret: environment.secretJwt,
+          signOptions: { algorithm: 'RS256' },
+        }),
+      ],
+      providers: [AuthService, JwtStrategy],
     }).compile();
 
-    service = module.get<AuthService>(AuthService);
+    authService = module.get<AuthService>(AuthService);
+    jwtStrategy = module.get<JwtStrategy>(JwtStrategy);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('auth service should be defined', () => {
+    expect(authService).toBeDefined();
+  });
+
+  it('jwt startegy should be defined', () => {
+    expect(jwtStrategy).toBeDefined();
   });
 });

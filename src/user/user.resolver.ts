@@ -1,8 +1,8 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
-import { CurrentUser } from 'src/auth/current-user.deco';
-import { JwtAuthGuard } from 'src/auth/jwt.auth';
+import { CurrentUser } from '../auth/current-user.deco';
+import { JwtAuthGuard } from '../auth/jwt.auth';
 import {
   User,
   CreateUser,
@@ -12,7 +12,7 @@ import {
 } from '../entity/user.entity';
 import { UserPayload } from '../auth/jwt.strategy';
 
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { UserService } from './user.service';
 
 @Resolver(of => User)
