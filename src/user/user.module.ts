@@ -7,7 +7,7 @@ import { User } from '../entity/user.entity';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User], 'reschool'), AuthModule],
+  imports: [TypeOrmModule.forFeature([User]), AuthModule],
   providers: [UserResolver, UserService],
 })
 export class UserModule {}

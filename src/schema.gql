@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateRoom {
+  description: String!
+  roomName: String!
+}
+
 input CreateUser {
   email: String!
   password: String!
@@ -19,6 +24,7 @@ input LogInUser {
 }
 
 type Mutation {
+  createRoom(room: CreateRoom!): Boolean!
   createUser(user: CreateUser!): Boolean!
   deleteUser(deleteUser: DeleteUser!): Boolean!
   updateUser(user: UpdateUser!): Boolean!
@@ -28,6 +34,11 @@ type Query {
   getAllUsers: [User!]!
   getOneUser: User!
   logIn(user: LogInUser!): String!
+}
+
+input Student {
+  email: String!
+  username: String!
 }
 
 input UpdateUser {

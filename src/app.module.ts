@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
@@ -14,10 +15,10 @@ import { AuthModule } from './auth/auth.module';
       port: 27017,
       database: 'reschool',
       entities: [join(__dirname, './entity/**/**.{ts,js}')],
-      synchronize: true,
       useUnifiedTopology: true,
     }),
     GraphQLModule.forRoot({
+      debug: false,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       installSubscriptionHandlers: true,
@@ -25,6 +26,7 @@ import { AuthModule } from './auth/auth.module';
     }),
 
     UserModule,
+    RoomModule,
 
     AuthModule,
   ],

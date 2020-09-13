@@ -7,7 +7,9 @@ import {
   Column,
   CreateDateColumn,
   Unique,
+  ManyToMany,
 } from 'typeorm';
+import { Room } from './room.entity';
 
 @ObjectType()
 @Entity()

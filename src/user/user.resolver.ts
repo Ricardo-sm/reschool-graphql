@@ -1,8 +1,10 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
+import { ApolloError } from 'apollo-server-express';
 
 import { CurrentUser } from '../auth/current-user.deco';
 import { JwtAuthGuard } from '../auth/jwt.auth';
+
 import {
   User,
   CreateUser,
@@ -15,7 +17,7 @@ import { UserPayload } from '../auth/jwt.strategy';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from './user.service';
 
-@Resolver(of => User)
+@Resolver(() => User)
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
@@ -32,10 +34,10 @@ export class UserResolver {
       const usedUsername = await this.userService.findByUsername(
         newUser.username,
       );
-      if (usedUsername) new Error('Username is already used');
+      if (usedUsername) throw new ApolloError('Username is already used');
 
       const usedEmail = await this.userService.findByEmail(newUser.email);
-      if (usedEmail) new Error('Email is alredy used');
+      if (usedEmail) throw new ApolloError('Email is alredy used');
 
       const hashPassword = await this.userService.hashPassword(
         newUser.password,
@@ -56,18 +58,18 @@ export class UserResolver {
   ): Promise<boolean> {
     try {
       if (Object.entries(user).length === 0)
-        new Error('No fields were updated');
+        new ApolloError('No fields were updated');
 
       if (user.username) {
         const usedUsername = await this.userService.findByUsername(
           user.username,
         );
-        if (usedUsername) new Error('Username is already used');
+        if (usedUsername) throw new ApolloError('Username is already used');
       }
 
       if (user.email) {
         const usedEmail = await this.userService.findByEmail(user.email);
-        if (usedEmail) new Error('Email is alredy used');
+        if (usedEmail) throw new ApolloError('Email is alredy used');
       }
 
       if (user.oldPassword) {
@@ -77,17 +79,18 @@ export class UserResolver {
         );
 
         if (match) {
-          if (!user.password) new Error('New password required');
+          if (!user.password) throw new ApolloError('New password required');
 
           const hashPassword = await this.userService.hashPassword(
             user.password,
           );
           user.password = hashPassword;
         } else {
-          new Error("Passwords don't match");
+          throw new ApolloError("Passwords don't match");
         }
       }
-      if (user.password && !user.oldPassword) new Error('Confirm old password');
+      if (user.password && !user.oldPassword)
+        throw new ApolloError('Confirm old password');
 
       return await this.userService.update(currentUser.id, user);
     } catch (error) {
@@ -103,13 +106,13 @@ export class UserResolver {
   ) {
     try {
       if (deleteUser.password != deleteUser.passwordConfirm)
-        new Error("Passwords don't match");
+        throw new ApolloError("Passwords don't match");
 
       const match = await this.userService.matchPasword(
         currentUser.id,
         deleteUser.password,
       );
-      if (!match) new Error('Incorrect password');
+      if (!match) throw new ApolloError('Incorrect password');
 
       return await this.userService.remove(currentUser.id);
     } catch (error) {
@@ -123,13 +126,13 @@ export class UserResolver {
   async logIn(@Args('user') userArg: LogInUser): Promise<string> {
     try {
       const user = await this.userService.findByEmail(userArg.email);
-      if (!user) new Error('Incorrect email or password');
+      if (!user) throw new ApolloError('Incorrect email or password');
 
       const matchPasword: boolean = await this.userService.matchPasword(
         user.id,
         userArg.password,
       );
-      if (!matchPasword) new Error('Incorrect email or password');
+      if (!matchPasword) throw new ApolloError('Incorrect email or password');
 
       return this.authService.createToken(user);
     } catch (error) {

@@ -16,10 +16,7 @@ export class UserService {
     return await bcrypt.hash(password, salt);
   }
 
-  async matchPasword(
-    id: string | ObjectID,
-    password: string,
-  ): Promise<boolean> {
+  async matchPasword(id: ObjectID, password: string): Promise<boolean> {
     const user = await this.findByID(id);
     const match = await bcrypt.compare(password, user.password);
 
@@ -39,13 +36,13 @@ export class UserService {
     return this.usersRepository.create(user);
   }
 
-  async update(id: string, user: UpdateUser): Promise<boolean> {
+  async update(id: ObjectID, user: UpdateUser): Promise<boolean> {
     const updateResult = await this.usersRepository.update(id, user);
     if (!updateResult) return false;
     return true;
   }
 
-  async remove(id: string): Promise<boolean> {
+  async remove(id: ObjectID): Promise<boolean> {
     const deleteResult = await this.usersRepository.delete(id);
     if (!deleteResult) return false;
     return true;
@@ -57,7 +54,7 @@ export class UserService {
     return this.usersRepository.find();
   }
 
-  findByID(id: string | ObjectID): Promise<User> {
+  findByID(id: ObjectID): Promise<User> {
     return this.usersRepository.findOne(id);
   }
 
