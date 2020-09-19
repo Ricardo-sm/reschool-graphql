@@ -34,10 +34,13 @@ export class UserResolver {
       const usedUsername = await this.userService.findByUsername(
         newUser.username,
       );
-      if (usedUsername) throw new ApolloError('Username is already used');
-
+      if (usedUsername) {
+        throw new ApolloError('Username is already used', 'username');
+      }
       const usedEmail = await this.userService.findByEmail(newUser.email);
-      if (usedEmail) throw new ApolloError('Email is alredy used');
+      if (usedEmail) {
+        throw new ApolloError('Email is alredy used', 'email');
+      }
 
       const hashPassword = await this.userService.hashPassword(
         newUser.password,
@@ -126,13 +129,15 @@ export class UserResolver {
   async logIn(@Args('user') userArg: LogInUser): Promise<string> {
     try {
       const user = await this.userService.findByEmail(userArg.email);
-      if (!user) throw new ApolloError('Incorrect email or password');
+      if (!user)
+        throw new ApolloError('Incorrect email or password', 'incorrect');
 
       const matchPasword: boolean = await this.userService.matchPasword(
         user.id,
         userArg.password,
       );
-      if (!matchPasword) throw new ApolloError('Incorrect email or password');
+      if (!matchPasword)
+        throw new ApolloError('Incorrect email or password', 'incorrect');
 
       return this.authService.createToken(user);
     } catch (error) {
